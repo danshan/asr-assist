@@ -25,6 +25,7 @@
     <modules>
         <module>asr-assist-spock</module>
         <module>asr-assist-core</module>
+        <module>asr-assist-xfyun</module>
         <module>asr-assist-web</module>
     </modules>
 
@@ -62,6 +63,7 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <gmavenplus-plugin.version>1.5</gmavenplus-plugin.version>
         <spring-boot-maven-plugin.version>1.4.5.RELEASE</spring-boot-maven-plugin.version>
+        <spring-boot-main-class />
     </properties>
 
     <dependencyManagement>
