@@ -1,14 +1,14 @@
 package com.shanhh.asr.assist.xfyun.config;
 
 import lombok.Data;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author shanhonghao
  * @since 1.0.0
  */
 @Data
-@Configuration
+@ConfigurationProperties(prefix = "asr-assist.lfasr", ignoreUnknownFields = true)
 public class LfasrProperties {
 
     private boolean enabled = false;
