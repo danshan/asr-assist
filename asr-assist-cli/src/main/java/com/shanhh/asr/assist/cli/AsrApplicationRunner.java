@@ -6,22 +6,22 @@ import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
 @Component
-public class MyApplicationRunner implements CommandLineRunner, ExitCodeGenerator {
+public class AsrApplicationRunner implements CommandLineRunner, ExitCodeGenerator {
 
-	private final MyCommand myCommand;
+	private final AsrCommand asrCommand;
 
 	private final CommandLine.IFactory factory; // auto-configured to inject PicocliSpringFactory
 
 	private int exitCode;
 
-	public MyApplicationRunner(MyCommand myCommand, CommandLine.IFactory factory) {
-		this.myCommand = myCommand;
+	public AsrApplicationRunner(AsrCommand asrCommand, CommandLine.IFactory factory) {
+		this.asrCommand = asrCommand;
 		this.factory = factory;
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		exitCode = new CommandLine(myCommand, factory).execute(args);
+		exitCode = new CommandLine(asrCommand, factory).execute(args);
 	}
 
 	@Override

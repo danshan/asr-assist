@@ -1,34 +1,29 @@
-package com.shanhh.asr.assist.cli;
+package com.shanhh.asr.assist.cli.service.impl;
 
 import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
+import com.shanhh.asr.assist.cli.service.AsrAssist;
 import com.shanhh.asr.assist.xfyun.service.XfyunService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Optional;
 
-import static picocli.CommandLine.*;
-
-@Component
-@Command(name = "asr-assist-cli", mixinStandardHelpOptions = true)
+/**
+ * @author shanhonghao
+ * @since 1.0.0
+ */
+@Service
 @Slf4j
-public class MyCommand implements Callable<Integer> {
+public class XfyunAsrAssist implements AsrAssist {
 
     @Resource
     private XfyunService xfyunService;
 
-    @Option(names = {"-f", "--file"}, required = true, description = "audio file")
-    private String file;
-
-    @Parameters(description = "files")
-    private List<String> positionals;
-
     @Override
-    public Integer call() {
-        String taskId = xfyunService.uploadFile(new File(this.file)).orElseThrow(() -> new IllegalStateException("upload failed"));
+    public Optional<String> voiceToText(File file, int interval) {
+        String taskId = xfyunService.uploadFile(file).orElseThrow(() -> new IllegalStateException("upload failed"));
 
         while (true) {
             try {
@@ -43,8 +38,6 @@ public class MyCommand implements Callable<Integer> {
             }
         }
 
-        xfyunService.getResult(taskId).ifPresent(result -> log.info(result));
-        return 0;
+        return xfyunService.getResult(taskId).map(result -> xfyunService.resultToMarkdown(file, result, interval));
     }
-
 }

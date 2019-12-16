@@ -105,6 +105,7 @@
                     <configuration>
                         <executable>true</executable>
                         <mainClass>${spring-boot-main-class}</mainClass>
+                        <includeSystemScope>true</includeSystemScope>
                     </configuration>
                     <executions>
                         <execution>

@@ -17,4 +17,6 @@ public interface XfyunService {
     Optional<ProgressStatus> getProgressStatus(String taskId);
 
     Optional<String> getResult(String taskId);
+
+    String resultToMarkdown(File file, String resultJson, int timeInterval);
 }
