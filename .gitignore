@@ -80,3 +80,5 @@ release.properties
 ## gitbook generated
 _book
 node_modules
+
+application-dev.properties
