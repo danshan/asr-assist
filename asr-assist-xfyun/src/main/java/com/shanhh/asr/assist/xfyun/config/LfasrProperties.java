@@ -29,9 +29,5 @@ public class LfasrProperties {
      * file piece size
      */
     private int filePieceSize;
-    /**
-     * this is not the store path for the result json file, but the path for the file piece during upload
-     */
-    private String storePath;
 
 }

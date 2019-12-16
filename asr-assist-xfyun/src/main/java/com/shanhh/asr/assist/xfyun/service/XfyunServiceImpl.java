@@ -34,7 +34,7 @@ public class XfyunServiceImpl implements XfyunService {
 
     @Resource
     private LfasrClient lfasrClient;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Optional<String> uploadFile(File file) {

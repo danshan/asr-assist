@@ -45,9 +45,10 @@ public class LfasrConfig {
         // validate host
         Preconditions.checkArgument(StringUtils.isNotEmpty(lfasrProperties.getLfasrHost()), "lfasr-host should not be empty");
         LfasrClientImp.SERV_LFASR_HOST_VAL = lfasrProperties.getLfasrHost();
+    }
 
+    public void validateStorePath(String storePath) {
         // validate store path
-        String storePath = lfasrProperties.getStorePath();
         Preconditions.checkArgument(StringUtils.isNotEmpty(storePath), "store-path should not be empty");
         String testFile = storePath.endsWith("/") ? (storePath + "test.dat") : (storePath + "/test.dat");
         try {
@@ -56,7 +57,7 @@ public class LfasrConfig {
         } catch (LfasrException ex) {
             throw new IllegalArgumentException(String.format("store-path [%s] permission denied", storePath));
         }
-        LfasrClientImp.SERV_STORE_PATH_VAL = lfasrProperties.getStorePath();
+        LfasrClientImp.SERV_STORE_PATH_VAL = storePath;
     }
 
     @Bean
