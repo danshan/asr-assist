@@ -1,0 +1,45 @@
+{
+  "groups": [
+    {
+      "name": "asr-assist.xfyun",
+      "type": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "Configurations for Xfyun ASR(Long From ASR)."
+    }
+  ],
+  "properties": [
+    {
+      "name": "asr-assist.xfyun.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "xfyun asr enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "asr-assist.xfyun.appId",
+      "type": "java.lang.String",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "app id."
+    },
+    {
+      "name": "asr-assist.xfyun.secretKey",
+      "type": "java.lang.String",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "app secret key."
+    },
+    {
+      "name": "asr-assist.xfyun.host",
+      "type": "java.lang.String",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "host for xfyun lfasr host.",
+      "defaultValue": "http://raasr.xfyun.cn/api"
+    },
+    {
+      "name": "asr-assist.xfyun.file-piece-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "file piece size, KB.",
+      "defaultValue": "10485760"
+    }
+  ]
+}

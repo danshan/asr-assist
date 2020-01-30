@@ -1,95 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.shanhh.asr-assist</groupId>
-        <artifactId>asr-assist-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>asr-assist-cli</artifactId>
+  <parent>
+    <groupId>com.github.danshan</groupId>
+    <artifactId>asr-assist</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+  </parent>
 
-    <properties>
-        <picocli.version>4.1.2</picocli.version>
-        <sonar.tests>src/test/groovy</sonar.tests>
-    </properties>
+  <artifactId>asr-assist-cli</artifactId>
+  <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.shanhh.asr-assist</groupId>
-            <artifactId>asr-assist-xfyun</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+  <properties>
+    <picocli.version>4.1.4</picocli.version>
+    <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+    <jackson.version>2.10.2</jackson.version>
 
-        <!-- spring-boot -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli-spring-boot-starter</artifactId>
-            <version>${picocli.version}</version>
-        </dependency>
+    <sonar.tests>src/test/groovy</sonar.tests>
+  </properties>
 
-        <!-- test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.shanhh.asr-assist</groupId>
-            <artifactId>asr-assist-parent</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>com.github.danshan</groupId>
+      <artifactId>asr-assist-xfyun</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
 
-    </dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <includeSystemScope>true</includeSystemScope>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <!-- spring-boot -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli-spring-boot-starter</artifactId>
+      <version>${picocli.version}</version>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>com.github.danshan</groupId>
+      <artifactId>asr-assist-spock</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <includeSystemScope>true</includeSystemScope>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
