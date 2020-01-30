@@ -1,4 +1,4 @@
-package com.shanhh.asr.assist.web.controller;
+package com.github.danshan.asrassist.web.controller;
 
 import lombok.Data;
 import org.springframework.stereotype.Controller;

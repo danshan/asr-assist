@@ -1,4 +1,4 @@
-package com.shanhh.asr.assist.web.config;
+package com.github.danshan.asrassist.web.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author shanhonghao
  * @since 1.0.0
  */
-@ConfigurationProperties(prefix = "asr-aasist")
+@ConfigurationProperties(prefix = "asr-assist")
 @Data
 public class AsrProperties {
 

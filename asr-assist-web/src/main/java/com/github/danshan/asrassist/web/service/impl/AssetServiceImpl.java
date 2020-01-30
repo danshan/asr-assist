@@ -1,7 +1,8 @@
-package com.shanhh.asr.assist.web.service.impl;
+package com.github.danshan.asrassist.web.service.impl;
 
-import com.shanhh.asr.assist.web.config.AsrProperties;
-import com.shanhh.asr.assist.web.service.AssetService;
+import com.github.danshan.asrassist.web.config.AsrProperties;
+import com.github.danshan.asrassist.web.controller.dto.UploadResp;
+import com.github.danshan.asrassist.web.service.AssetService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,7 @@ public class AssetServiceImpl implements AssetService {
     private AsrProperties asrProperties;
 
     @Override
-    public Optional<UploadFile> saveFile(HttpServletRequest request) {
-        log.debug("fetching file");
-
+    public Optional<UploadResp> uploadFile(HttpServletRequest request) {
         // 转换为文件类型的request
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
@@ -39,38 +38,45 @@ public class AssetServiceImpl implements AssetService {
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
         Iterator<String> fileIterator = multipartRequest.getFileNames();
 
+        UploadResp uploadResp = new UploadResp();
+
         while (fileIterator.hasNext()) {
             String filename = fileIterator.next();
-            log.debug("filename: {}", filename);
-
             // 获取对应文件
             MultipartFile multipartFile = fileMap.get(filename);
 
             if (multipartFile.getSize() != 0L) {
-                validateImage(multipartFile);
+                validateFile(multipartFile);
 
-                return this.saveFile(multipartFile);
+                Optional<UploadFile> uploadFile = this.saveFile(multipartFile);
+                if (uploadFile.isPresent()) {
+                    uploadResp.getInitialPreview().add(multipartFile.getOriginalFilename() + " waiting for conversion");
+                } else {
+                    uploadResp.setError(multipartFile.getOriginalFilename() + " upload failed");
+                    break;
+                }
             }
         }
 
-        return Optional.empty();
+        return Optional.of(uploadResp);
     }
 
     private Optional<UploadFile> saveFile(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        log.debug("original filename: {}" + originalFilename);
+        log.debug("original filename: {}", originalFilename);
 
         String contentType = file.getContentType();
         String type = contentType.substring(contentType.indexOf('/') + 1);
-        String tempName = UUID.randomUUID().toString().replaceAll("-", "") + "." + type;
+        String tempName = UUID.randomUUID().toString().replace("-", "") + "." + type;
 
         UploadFile uploadFile = new UploadFile(originalFilename);
         uploadFile.setContentType(contentType);
         uploadFile.setTempName(tempName);
-        log.debug("uploaded filed: {}", uploadFile);
+        uploadFile.setPath(getAbsolutePath(uploadFile));
+        log.info("uploaded filed: {}", uploadFile);
 
         try {
-            FileUtils.writeByteArrayToFile(new File(getAbsolutePath(uploadFile)), file.getBytes());
+            FileUtils.writeByteArrayToFile(new File(uploadFile.getPath()), file.getBytes());
             return Optional.of(uploadFile);
         } catch (IOException e) {
             log.error("save file failed, file={}, {}", file, e.getMessage());
@@ -83,6 +89,6 @@ public class AssetServiceImpl implements AssetService {
         return storePath.endsWith("/") ? (storePath + file.getRelativePath()) : (storePath + "/" + file.getRelativePath());
     }
 
-    private void validateImage(MultipartFile image) {
+    private void validateFile(MultipartFile file) {
     }
 }

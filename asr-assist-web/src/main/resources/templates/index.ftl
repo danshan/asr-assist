@@ -38,7 +38,7 @@
 </nav>
 
 <div class="container" style="margin-top:30px">
-    <input id="uploadfile" type="file" multiple data-browse-on-zone-click="true">
+    <input id="uploadfile" type="file" data-show-preview="false">
 </div>
 
 

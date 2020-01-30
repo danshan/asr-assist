@@ -1,4 +1,4 @@
-package com.shanhh.asr.assist.web.service.impl;
+package com.github.danshan.asrassist.web.service.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
@@ -15,6 +15,7 @@ public class UploadFile {
     private final String originName;
     private String tempName;
     private String contentType;
+    private String path;
 
     @JsonIgnore
     private String getHashPath() {

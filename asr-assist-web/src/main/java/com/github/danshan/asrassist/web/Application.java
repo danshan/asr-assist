@@ -1,4 +1,4 @@
-package com.shanhh.asr.assist.web;
+package com.github.danshan.asrassist.web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

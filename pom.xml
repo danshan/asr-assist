@@ -67,7 +67,7 @@
     <module>asr-assist-core</module>
     <module>asr-assist-xfyun</module>
     <module>asr-assist-cli</module>
-<!--    <module>asr-assist-web</module>-->
+    <module>asr-assist-web</module>
   </modules>
 
   <dependencyManagement>

@@ -1,4 +1,4 @@
-package com.shanhh.asr.assist.web.config;
+package com.github.danshan.asrassist.web.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
