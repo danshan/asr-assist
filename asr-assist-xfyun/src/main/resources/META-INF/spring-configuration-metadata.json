@@ -40,6 +40,13 @@
       "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
       "description": "file piece size, KB.",
       "defaultValue": "10485760"
+    },
+    {
+      "name": "asr-assist.xfyun.store-path",
+      "type": "java.lang.String",
+      "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
+      "description": "this is not the store path for the result json file, but the path for the file piece during upload",
+      "defaultValue": "/tmp"
     }
   ]
 }

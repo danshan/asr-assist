@@ -29,5 +29,10 @@ public class XfyunAsrProperties {
      * file piece size (KB)
      */
     private int filePieceSize = 10485760;
+    /**
+     * this is not the store path for the result json file, but the path for the file piece during upload
+     */
+    private String storePath = "/tmp";
+
 
 }

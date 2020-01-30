@@ -2,8 +2,8 @@ package com.github.danshan.asrassist.cli;
 
 import com.github.danshan.asrassist.cli.service.AsrAssist;
 import com.github.danshan.asrassist.cli.service.AsrAssistFactory;
-import com.google.common.io.Files;
 import com.github.danshan.asrassist.xfyun.config.XfyunAsrConfig;
+import com.google.common.io.Files;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -35,13 +35,8 @@ public class AsrCommand implements Callable<Integer> {
     @Option(names = {"-i", "--interval"}, required = false, defaultValue = "120", description = "time interval, seconds. default '120'")
     private int interval;
 
-    @Option(names = {"-p", "--store-path"}, required = false, defaultValue = "/tmp", description = "store path, this is not the store path for the result json file, but the path for the file piece during upload")
-    private String storePath;
-
     @Override
     public Integer call() {
-        xfyunAsrConfig.validateStorePath(this.storePath);
-        
         AsrAssist assist = asrAssistFactory.getAssist(this.adapter).orElseThrow(() -> new IllegalArgumentException("unknown adapter: " + adapter));
         return assist.voiceToText(new File(file), interval * 1000).map(text -> {
             String target = file.substring(0, file.lastIndexOf('.')) + ".md";
