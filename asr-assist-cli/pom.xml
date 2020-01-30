@@ -18,6 +18,7 @@
     <jackson.version>2.10.2</jackson.version>
 
     <sonar.tests>src/test/groovy</sonar.tests>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <dependencies>

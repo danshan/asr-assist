@@ -5,7 +5,7 @@ jdk:
 
 before_install:
   - export TZ=Asia/Shanghai
-script: mvn clean package -B -V
+script: mvn clean package -Dgpg.skip -B -V
 
 notifications:
   slack: shanhonghao:pdqZbe3SSqGZahgfKsddxPE5
