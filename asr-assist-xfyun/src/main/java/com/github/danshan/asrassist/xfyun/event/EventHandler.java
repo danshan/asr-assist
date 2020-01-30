@@ -1,8 +1,9 @@
 package com.github.danshan.asrassist.xfyun.event;
 
-import com.alibaba.fastjson.JSON;
+import com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
 import com.github.danshan.asrassist.xfyun.file.LocalPersistenceFile;
+import com.github.danshan.asrassist.xfyun.model.ErrorCode;
 import com.github.danshan.asrassist.xfyun.model.Message;
 import com.github.danshan.asrassist.xfyun.model.UploadParams;
 import com.github.danshan.asrassist.xfyun.worker.HttpWorker;
@@ -23,20 +24,20 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class EventHandler {
     private static final Logger LOGGER = Logger.getLogger(EventHandler.class);
-    private static final int LIMITED_ACCESS_FREQUENCY_ECODE = 26603;
-    private UploadParams upParams;
-    private long file_piece_size;
-    private boolean is_resume = false;
+
+    private final XfyunAsrProperties xfyunAsrProperties;
+    private final UploadParams upParams;
+
     private EventQueue<Event> queue;
     private HashMap<String, Boolean> slice_hm = new HashMap();
     private CountDownLatch latch = new CountDownLatch(1);
     private ExecutorService exec;
     private int threadNum = 10;
 
-    public EventHandler(UploadParams upParams, long file_piece_size, boolean is_resume) {
+    public EventHandler(XfyunAsrProperties xfyunAsrProperties, UploadParams upParams) {
+        this.xfyunAsrProperties = xfyunAsrProperties;
         this.upParams = upParams;
-        this.file_piece_size = file_piece_size;
-        this.is_resume = is_resume;
+
         this.queue = new EventQueue();
         this.exec = Executors.newFixedThreadPool(this.threadNum);
         this.start();
@@ -111,7 +112,7 @@ public class EventHandler {
 
     public boolean isSendAll() throws LfasrException {
         if (this.exec.isShutdown()) {
-            throw new LfasrException("upload fail");
+            throw new LfasrException(Message.failed(ErrorCode.ASR_FILE_UPLOAD_ERR, null));
         } else {
             boolean isSend = true;
             if (this.slice_hm == null) {
@@ -149,10 +150,9 @@ public class EventHandler {
 
         public void run() {
             while(true) {
-                Event event = null;
-
+                Event event;
                 try {
-                    event = (Event)EventHandler.this.queue.take();
+                    event = EventHandler.this.queue.take();
                 } catch (InterruptedException var12) {
                     return;
                 }
@@ -160,16 +160,12 @@ public class EventHandler {
                 if (!event.canActive()) {
                     EventHandler.this.queue.add(event);
                 } else {
-                    HttpWorker worker;
-                    String result;
                     if (event.getType().getValue() == EventType.LFASR_FILE_DATA_CONTENT.getValue()) {
-                        worker = new HttpWorker();
-                        result = worker.handle(event);
                         String slice_id = event.getFileSlice().getSliceId();
                         Message responseObj = null;
 
                         try {
-                            responseObj = (Message)JSON.parseObject(result, Message.class);
+                            responseObj = new HttpWorker(xfyunAsrProperties).handle(event);
                         } catch (Exception var9) {
                             EventHandler.this.retryEvent(event);
                             continue;
@@ -198,12 +194,9 @@ public class EventHandler {
                         } catch (InterruptedException var11) {
                         }
 
-                        worker = new HttpWorker();
-                        result = worker.merge(event);
                         Message responseObjx = null;
-
                         try {
-                            responseObjx = (Message)JSON.parseObject(result, Message.class);
+                            responseObjx = new HttpWorker(xfyunAsrProperties).merge(event);
                         } catch (Exception var10) {
                             EventHandler.this.retryEvent(event);
                             continue;

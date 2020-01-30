@@ -1,17 +1,8 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.github.danshan.asrassist.xfyun.service;
 
-import com.alibaba.fastjson.JSON;
 import com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
-import com.github.danshan.asrassist.xfyun.model.LfasrType;
-import com.github.danshan.asrassist.xfyun.model.Message;
-import com.github.danshan.asrassist.xfyun.model.Signature;
-import com.github.danshan.asrassist.xfyun.model.UploadParams;
+import com.github.danshan.asrassist.xfyun.model.*;
 import com.github.danshan.asrassist.xfyun.util.VersionUtil;
 import com.github.danshan.asrassist.xfyun.worker.HttpWorker;
 import com.github.danshan.asrassist.xfyun.worker.ResumeWorker;
@@ -48,19 +39,17 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
         Signature signature;
         try {
             signature = genSignature();
-        } catch (Exception var8) {
-            String err = "generate signature failed";
-            log.warn(err);
-            throw new LfasrException(err);
+        } catch (Exception ex) {
+            throw new LfasrException(Message.failed(ErrorCode.ASR_SIGN_ERR, null));
         }
 
-        UploadWorker uw = new UploadWorker(signature, file, type, xfyunAsrProperties.getFilePieceSize(), params);
+        UploadWorker uw = new UploadWorker(this.xfyunAsrProperties, signature, file, type, params);
         return uw.upload();
     }
 
     @Override
     public void resume() throws LfasrException {
-        ResumeWorker rw = new ResumeWorker();
+        ResumeWorker rw = new ResumeWorker(this.xfyunAsrProperties);
         rw.upload();
     }
 
@@ -70,14 +59,10 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
             UploadParams params = new UploadParams();
             params.setSignature(genSignature());
             params.setClientVersion(VersionUtil.getVersion());
-            String result = (new HttpWorker()).getVersion(params);
-            Message message = null;
+            return new HttpWorker(this.xfyunAsrProperties).getVersion(params);
 
-            return convertToMsg(result);
         } catch (Exception ex) {
-            String err = String.format("get version failed, [%s]", ex.getMessage());
-            log.warn(err);
-            throw new LfasrException(err);
+            throw new LfasrException(Message.failed(ErrorCode.ASR_API_VERSION_ERR, null));
         }
     }
 
@@ -87,13 +72,11 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
             UploadParams params = new UploadParams();
             params.setSignature(genSignature());
             params.setTaskId(taskId);
-            String result = (new HttpWorker()).getProgress(params);
-
-            return convertToMsg(result);
+            return new HttpWorker(this.xfyunAsrProperties).getProgress(params);
         } catch (Exception ex) {
-            String err = String.format("get progress failed, taskId=[%s], [%s]", taskId, ex.getMessage());
-            log.warn(err);
-            throw new LfasrException(err);
+            Message failed = Message.failed(ErrorCode.ASR_API_PROGRESS_ERR, null);
+            log.warn("[{}], taskId=[{}], [{}]", failed, taskId, ex.getMessage());
+            throw new LfasrException(failed);
         }
     }
 
@@ -103,28 +86,16 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
             UploadParams params = new UploadParams();
             params.setSignature(genSignature());
             params.setTaskId(taskId);
-            String result = (new HttpWorker()).getResult(params);
-
-            return convertToMsg(result);
+            return new HttpWorker(this.xfyunAsrProperties).getResult(params);
         } catch (Exception ex) {
-            String err = String.format("get result failed, taskId=[%s], [%s]", taskId, ex.getMessage());
-            log.warn(err);
-            throw new LfasrException(err);
+            Message failed = Message.failed(ErrorCode.ASR_API_RESULT_ERR, null);
+            log.warn("[{}], taskId=[{}], [{}]", failed, taskId, ex.getMessage());
+            throw new LfasrException(failed);
         }
     }
 
     private Signature genSignature() throws SignatureException {
         return new Signature(xfyunAsrProperties.getAppId(), xfyunAsrProperties.getSecretKey());
-    }
-
-    private Message convertToMsg(String result) throws LfasrException {
-        try {
-            return JSON.parseObject(result, Message.class);
-        } catch (Exception ex) {
-            String err = String.format("deserialize result json failed, [%s], [%s]", result, ex.getMessage());
-            log.warn(err);
-            throw new LfasrException(err);
-        }
     }
 
 }

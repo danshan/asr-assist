@@ -10,12 +10,12 @@ import java.util.Map;
 @Data
 public class UploadParams {
     private Signature signature;
-    private LfasrType lfasrType; // TODO lfasr_type
-    private String taskId; // TODO taskId
+    private LfasrType lfasrType;
+    private String taskId;
     private File file;
-    private int sliceNum; // TODO slice_num
-    private String clientVersion; // TODO client_version
-    private double checkLength; // TODO check_length
+    private int sliceNum;
+    private String clientVersion;
+    private double checkLength;
     private Map<String, String> params;
 
     public UploadParams() {

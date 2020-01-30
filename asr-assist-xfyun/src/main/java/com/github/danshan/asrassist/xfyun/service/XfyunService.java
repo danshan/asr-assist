@@ -1,7 +1,7 @@
 package com.github.danshan.asrassist.xfyun.service;
 
 
-import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
+import com.github.danshan.asrassist.xfyun.model.ProgressStatus;
 
 import java.io.File;
 import java.util.Optional;

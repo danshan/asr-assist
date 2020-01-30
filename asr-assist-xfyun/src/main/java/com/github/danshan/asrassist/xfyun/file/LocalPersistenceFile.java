@@ -1,6 +1,8 @@
 package com.github.danshan.asrassist.xfyun.file;
 
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
+import com.github.danshan.asrassist.xfyun.model.ErrorCode;
+import com.github.danshan.asrassist.xfyun.model.Message;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +22,14 @@ public class LocalPersistenceFile {
             long fileLength = randomFile.length();
             randomFile.seek(fileLength);
             randomFile.writeBytes(content + "\r\n");
-        } catch (IOException var12) {
-            throw new LfasrException("{\"ok\":\"-1\", \"err_no\":\"26301\", \"failed\":\"转写断点续传持久化文件读写错误!\", \"data\":\"\"}");
+        } catch (IOException ex) {
+            throw new LfasrException(Message.failed(ErrorCode.ASR_BREAKPOINT_PERSISTENCE_ERR, null));
         } finally {
             if (randomFile != null) {
                 try {
                     randomFile.close();
-                } catch (IOException var11) {
-                    throw new LfasrException("{\"ok\":\"-1\", \"err_no\":\"26301\", \"failed\":\"转写断点续传持久化文件读写错误!\", \"data\":\"\"}");
+                } catch (IOException ex) {
+                    throw new LfasrException(Message.failed(ErrorCode.ASR_BREAKPOINT_PERSISTENCE_ERR, null));
                 }
             }
 
@@ -63,8 +65,8 @@ public class LocalPersistenceFile {
             }
 
             return filelist;
-        } catch (Exception var6) {
-            throw new LfasrException("{\"ok\":\"-1\", \"err_no\":\"26302\", \"failed\":\"转写断点续传文件夹读写错误!\", \"data\":\"\"}");
+        } catch (Exception ex) {
+            throw new LfasrException(Message.failed(ErrorCode.ASR_BREAKPOINT_FOLDER_ERR, null));
         }
     }
 }

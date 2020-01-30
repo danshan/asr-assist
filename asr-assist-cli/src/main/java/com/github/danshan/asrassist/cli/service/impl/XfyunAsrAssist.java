@@ -1,7 +1,7 @@
 package com.github.danshan.asrassist.cli.service.impl;
 
 import com.github.danshan.asrassist.cli.service.AsrAssist;
-import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
+import com.github.danshan.asrassist.xfyun.model.ProgressStatus;
 import com.github.danshan.asrassist.xfyun.service.XfyunService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

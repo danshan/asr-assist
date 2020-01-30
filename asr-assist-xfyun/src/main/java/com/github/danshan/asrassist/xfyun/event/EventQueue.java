@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.github.danshan.asrassist.xfyun.event;
 
 import java.util.Collection;

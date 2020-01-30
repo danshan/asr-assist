@@ -17,9 +17,9 @@ import java.util.Date;
 @Getter
 @RequiredArgsConstructor
 public class Signature {
-    private final String appId; // TODO app_id
+    private final String appId;
     @ToStringExclude
-    private final String secretKey; // TODO secret_key
+    private final String secretKey;
     @ToStringExclude
     private final String signa;
     private final String ts;
