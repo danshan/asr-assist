@@ -6,18 +6,17 @@
 package com.github.danshan.asrassist.xfyun.service;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import com.iflytek.msp.cpdb.lfasr.exception.LfasrException;
-import com.iflytek.msp.cpdb.lfasr.model.LfasrType;
-import com.iflytek.msp.cpdb.lfasr.model.Message;
-import com.iflytek.msp.cpdb.lfasr.model.Signature;
-import com.iflytek.msp.cpdb.lfasr.model.UploadParams;
-import com.iflytek.msp.cpdb.lfasr.util.VersionUtil;
-import com.iflytek.msp.cpdb.lfasr.worker.HttpWorker;
-import com.iflytek.msp.cpdb.lfasr.worker.ResumeWorker;
-import com.iflytek.msp.cpdb.lfasr.worker.UploadWorker;
 import com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties;
+import com.github.danshan.asrassist.xfyun.exception.LfasrException;
+import com.github.danshan.asrassist.xfyun.model.LfasrType;
+import com.github.danshan.asrassist.xfyun.model.Message;
+import com.github.danshan.asrassist.xfyun.model.Signature;
+import com.github.danshan.asrassist.xfyun.model.UploadParams;
+import com.github.danshan.asrassist.xfyun.util.VersionUtil;
+import com.github.danshan.asrassist.xfyun.worker.HttpWorker;
+import com.github.danshan.asrassist.xfyun.worker.ResumeWorker;
+import com.github.danshan.asrassist.xfyun.worker.UploadWorker;
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +45,7 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
         Preconditions.checkArgument(file.length() > 0, "file [%s] size is 0", file.getAbsoluteFile());
         Preconditions.checkArgument(type != null, "type should not be null");
 
-        Signature signature = null;
+        Signature signature;
         try {
             signature = genSignature();
         } catch (Exception var8) {
@@ -55,7 +54,7 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
             throw new LfasrException(err);
         }
 
-        UploadWorker uw = new UploadWorker(signature, file, type, xfyunAsrProperties.getFilePieceSize(), Maps.newHashMap(params));
+        UploadWorker uw = new UploadWorker(signature, file, type, xfyunAsrProperties.getFilePieceSize(), params);
         return uw.upload();
     }
 
@@ -70,7 +69,7 @@ public class XfyunAsrClientImpl implements XfyunAsrClient {
         try {
             UploadParams params = new UploadParams();
             params.setSignature(genSignature());
-            params.setClientVersion(VersionUtil.GetVersion());
+            params.setClientVersion(VersionUtil.getVersion());
             String result = (new HttpWorker()).getVersion(params);
             Message message = null;
 

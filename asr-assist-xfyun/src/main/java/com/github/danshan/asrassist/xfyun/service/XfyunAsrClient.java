@@ -1,8 +1,8 @@
 package com.github.danshan.asrassist.xfyun.service;
 
-import com.iflytek.msp.cpdb.lfasr.exception.LfasrException;
-import com.iflytek.msp.cpdb.lfasr.model.LfasrType;
-import com.iflytek.msp.cpdb.lfasr.model.Message;
+import com.github.danshan.asrassist.xfyun.exception.LfasrException;
+import com.github.danshan.asrassist.xfyun.model.LfasrType;
+import com.github.danshan.asrassist.xfyun.model.Message;
 
 import java.io.File;
 import java.util.Map;
