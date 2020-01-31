@@ -1,14 +1,14 @@
 package com.github.danshan.asrassist.xfyun.service;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.danshan.asrassist.xfyun.dto.AsrResult;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
 import com.github.danshan.asrassist.xfyun.model.LfasrType;
 import com.github.danshan.asrassist.xfyun.model.Message;
 import com.github.danshan.asrassist.xfyun.model.ProgressStatus;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.github.danshan.asrassist.xfyun.dto.AsrResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class XfyunServiceImpl implements XfyunService {
 
     @Resource
     private XfyunAsrClient xfyunAsrClient;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Optional<String> uploadFile(File file) {
@@ -54,8 +54,12 @@ public class XfyunServiceImpl implements XfyunService {
                 return Optional.empty();
             }
         } catch (LfasrException e) {
-            Message uploadMsg = JSON.parseObject(e.getMessage(), Message.class);
-            log.warn("start uploading failed, ecode=[{}], failed=[{}]", uploadMsg.getErrNo(), uploadMsg.getFailed());
+            try {
+                Message uploadMsg = objectMapper.readValue(e.getMessage(), Message.class);
+                log.warn("start uploading failed, ecode=[{}], failed=[{}]", uploadMsg.getErrNo(), uploadMsg.getFailed());
+            } catch (JsonProcessingException ex) {
+                log.warn("start uploading failed, failed=[{}]", ex.getMessage());
+            }
             return Optional.empty();
         }
     }
@@ -72,12 +76,16 @@ public class XfyunServiceImpl implements XfyunService {
                 log.warn("task failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
                 return Optional.empty();
             } else {
-                ProgressStatus progressStatus = JSON.parseObject(progressMsg.getData(), ProgressStatus.class);
+                ProgressStatus progressStatus = objectMapper.readValue(progressMsg.getData(), ProgressStatus.class);
                 return Optional.of(progressStatus);
             }
-        } catch (LfasrException e) {
-            Message progressMsg = JSON.parseObject(e.getMessage(), Message.class);
-            log.warn("get progress stauts failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
+        } catch (LfasrException | JsonProcessingException e) {
+            try {
+                Message progressMsg = objectMapper.readValue(e.getMessage(), Message.class);
+                log.warn("get progress stauts failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
+            } catch (JsonProcessingException ex) {
+                log.warn("get progress stauts failed, taskId=[{}], failed=[{}]", taskId, ex.getMessage());
+            }
             return Optional.empty();
         }
     }
@@ -94,8 +102,12 @@ public class XfyunServiceImpl implements XfyunService {
                 return Optional.empty();
             }
         } catch (LfasrException e) {
-            Message progressMsg = JSON.parseObject(e.getMessage(), Message.class);
-            log.warn("get result failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
+            try {
+                Message progressMsg = objectMapper.readValue(e.getMessage(), Message.class);
+                log.warn("get result failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
+            } catch (JsonProcessingException ex) {
+                log.warn("get result failed, taskId=[{}], failed=[{}]", taskId, ex.getMessage());
+            }
             return Optional.empty();
         }
     }

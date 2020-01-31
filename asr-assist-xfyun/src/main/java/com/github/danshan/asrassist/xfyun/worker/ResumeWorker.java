@@ -1,14 +1,12 @@
 package com.github.danshan.asrassist.xfyun.worker;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties;
 import com.github.danshan.asrassist.xfyun.event.Event;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
 import com.github.danshan.asrassist.xfyun.file.ChannelFileReader;
 import com.github.danshan.asrassist.xfyun.file.LocalPersistenceFile;
 import com.github.danshan.asrassist.xfyun.model.*;
-import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
-import com.iflytek.msp.cpdb.lfasr.model.EventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,10 +23,12 @@ public class ResumeWorker {
 
     private final XfyunAsrProperties xfyunAsrProperties;
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     public void upload() throws LfasrException {
         List<File> fileList;
         try {
-            fileList = LocalPersistenceFile.getFileList(LfasrClientImp.SERV_STORE_PATH_VAL + "/");
+            fileList = LocalPersistenceFile.getFileList(xfyunAsrProperties.getStorePath() + "/");
         } catch (LfasrException ex) {
             throw ex;
         }
@@ -53,7 +53,7 @@ public class ResumeWorker {
 
                     for (int line = 1; (str = br.readLine()) != null; ++line) {
                         if (line == 1) {
-                            LocalPersistenceMeta lpm = JSON.parseObject(str, LocalPersistenceMeta.class);
+                            LocalPersistenceMeta lpm = objectMapper.readValue(str, LocalPersistenceMeta.class);
                             app_id = lpm.getAppId();
                             secret_key = lpm.getSecretKey();
                             signa = lpm.getSigna();

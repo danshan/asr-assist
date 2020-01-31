@@ -8,7 +8,6 @@ import com.github.danshan.asrassist.xfyun.service.XfyunService;
 import com.github.danshan.asrassist.xfyun.service.XfyunServiceImpl;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
-import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +59,6 @@ public class XfyunAsrConfig {
         } catch (LfasrException | IOException ex) {
             throw new IllegalArgumentException(String.format("store-path [%s] permission denied", storePath));
         }
-        LfasrClientImp.SERV_STORE_PATH_VAL = storePath;
     }
 
     @Bean

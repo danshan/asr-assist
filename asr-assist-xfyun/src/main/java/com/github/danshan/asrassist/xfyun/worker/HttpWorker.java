@@ -36,7 +36,7 @@ public class HttpWorker {
         params.put("ts", upParams.getSignature().getTs());
         params.put("file_len", String.valueOf(upParams.getFile().length()));
         params.put("file_name", upParams.getFile().getName());
-        params.put("lfasr_type", String.valueOf(upParams.getLfasrType().getValue()));
+        params.put("lfasr_type", String.valueOf(upParams.getLfasrType().value));
         params.put("slice_num", String.valueOf(upParams.getSliceNum()));
         params.put("client_version", upParams.getClientVersion());
         params.put("check_length", upParams.getCheckLength() + "");

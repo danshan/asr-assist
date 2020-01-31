@@ -14,6 +14,8 @@
 
   <properties>
     <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+    <jaudiotagger.version>2.0.3</jaudiotagger.version>
+    <httpcomponents-client.version>4.5.6</httpcomponents-client.version>
   </properties>
 
   <dependencyManagement>
@@ -31,14 +33,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.xfyun.lfasr</groupId>
-      <artifactId>lfasr-sdk-client</artifactId>
-      <version>2.0.0.1007</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/lfasr-sdk-client-2.0.0.1007.jar</systemPath>
-    </dependency>
-
-    <dependency>
       <groupId>com.github.danshan</groupId>
       <artifactId>asr-assist-core</artifactId>
       <version>1.0.0-SNAPSHOT</version>
@@ -48,6 +42,16 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org</groupId>
+      <artifactId>jaudiotagger</artifactId>
+      <version>${jaudiotagger.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <version>${httpcomponents-client.version}</version>
     </dependency>
 
     <dependency>

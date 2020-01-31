@@ -4,13 +4,11 @@ import com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
 import com.github.danshan.asrassist.xfyun.file.LocalPersistenceFile;
 import com.github.danshan.asrassist.xfyun.model.ErrorCode;
+import com.github.danshan.asrassist.xfyun.model.EventType;
 import com.github.danshan.asrassist.xfyun.model.Message;
 import com.github.danshan.asrassist.xfyun.model.UploadParams;
 import com.github.danshan.asrassist.xfyun.worker.HttpWorker;
-import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
-import com.iflytek.msp.cpdb.lfasr.model.EventType;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.Date;
@@ -23,7 +21,6 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 public class EventHandler {
-    private static final Logger LOGGER = Logger.getLogger(EventHandler.class);
 
     private final XfyunAsrProperties xfyunAsrProperties;
     private final UploadParams upParams;
@@ -44,7 +41,7 @@ public class EventHandler {
     }
 
     public void start() {
-        for(int i = 0; i < this.threadNum; ++i) {
+        for (int i = 0; i < this.threadNum; ++i) {
             this.exec.execute(new EventHandler.ProcessorThread());
         }
     }
@@ -62,46 +59,56 @@ public class EventHandler {
         try {
             long activeTimeMillis = System.currentTimeMillis();
             int retryTimes = event.getRetryTimes();
-            switch(retryTimes) {
-            case 0:
-            case 1:
-            case 2:
-                activeTimeMillis += 5000L;
-                LOGGER.warn(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "Event retry", event.getParams().getTaskId(), "", "(-1) ms", (event.getType().getValue() == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge") + " fail, freezing a while to " + new Date(activeTimeMillis)));
-                break;
-            case 3:
-            case 4:
-                activeTimeMillis += 300000L;
-                LOGGER.warn(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "Event retry", event.getParams().getTaskId(), "", "(-1) ms", (event.getType().getValue() == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge") + " fail, freezing a long timeMillis to " + new Date(activeTimeMillis)));
-                break;
-            default:
-                LOGGER.error(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "Event retry", event.getParams().getTaskId(), "", "(-1) ms", (event.getType().getValue() == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge") + " fail, retry times reach " + retryTimes + ", task fail"));
-                this.latch.countDown();
-                this.exec.shutdownNow();
-                return;
+            switch (retryTimes) {
+                case 0:
+                case 1:
+                case 2:
+                    activeTimeMillis += 5000L;
+                    log.warn("[{}] fail, freezing a while to [{}]",
+                        (event.getType().value == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge"),
+                        new Date(activeTimeMillis));
+                    break;
+                case 3:
+                case 4:
+                    activeTimeMillis += 300000L;
+                    log.warn("[{}] fail, freezing a long timeMillis to [{}]",
+                        (event.getType().value == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge"),
+                        new Date(activeTimeMillis));
+                    break;
+                default:
+                    log.warn("[{}] fail, retry times reach [{}], task fail",
+                        (event.getType().value == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge"),
+                        retryTimes);
+                    this.latch.countDown();
+                    this.exec.shutdownNow();
+                    return;
             }
 
-            LOGGER.error(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "Event retry", event.getParams().getTaskId(), "", "(-1) ms", (event.getType().getValue() == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge") + " fail, freeze event...and try again....current retry times " + retryTimes));
+            log.warn("[{}] fail, freeze event...and try again....current retry times {}",
+                (event.getType().value == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge"),
+                retryTimes);
             event.setActiveTimeMillis(activeTimeMillis);
             event.addRetryTimes();
             this.queue.put(event);
-        } catch (InterruptedException var5) {
-            LOGGER.error(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "Event retry", event.getParams().getTaskId(), "", "(-1) ms", (event.getType().getValue() == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge") + " retry Interrupted"));
+        } catch (InterruptedException ex) {
+            log.error("[{}] fail, retry Interrupted",
+                (event.getType().value == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge"));
         }
 
     }
 
     private void retryEvent(Event event, Message message) {
         try {
-            if (message.getErrNo() == 26603) {
-                LOGGER.warn(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "Event retry", event.getParams().getTaskId(), "", "(-1) ms", (event.getType().getValue() == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge") + " fail, access frequency over limit, sleep for a while and retry"));
+            if (message.getErrNo() == ErrorCode.ASR_FREQUENCY_EXCEED_ERR.code) {
+                log.warn("[{}]  fail, access frequency over limit, sleep for a while and retry",
+                    (event.getType().value == 0 ? "slice_id:" + event.getFileSlice().getSliceId() + " upload" : "merge"));
                 Thread.sleep(10000L);
                 this.queue.put(event);
             } else {
                 this.retryEvent(event);
             }
-        } catch (Exception var4) {
-            var4.printStackTrace();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
         }
 
     }
@@ -110,7 +117,7 @@ public class EventHandler {
         this.slice_hm.put(slice_id, bool);
     }
 
-    public boolean isSendAll() throws LfasrException {
+    public boolean isSendAll() throws LfasrException, InterruptedException {
         if (this.exec.isShutdown()) {
             throw new LfasrException(Message.failed(ErrorCode.ASR_FILE_UPLOAD_ERR, null));
         } else {
@@ -121,8 +128,8 @@ public class EventHandler {
                 int sendNum = 0;
                 Iterator iter = this.slice_hm.entrySet().iterator();
 
-                while(iter.hasNext()) {
-                    Entry entry = (Entry)iter.next();
+                while (iter.hasNext()) {
+                    Entry entry = (Entry) iter.next();
                     if (entry.getValue().toString().equalsIgnoreCase("false")) {
                         isSend = false;
                     } else {
@@ -130,7 +137,7 @@ public class EventHandler {
                     }
                 }
 
-                LOGGER.debug(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "EventHandler", "", "", "(-1) ms", "upload file " + sendNum + "/" + this.slice_hm.size()));
+                log.debug("upload file [{}/{}]", sendNum, this.slice_hm.size());
                 return isSend;
             }
         }
@@ -149,7 +156,7 @@ public class EventHandler {
         }
 
         public void run() {
-            while(true) {
+            while (true) {
                 Event event;
                 try {
                     event = EventHandler.this.queue.take();
@@ -160,7 +167,7 @@ public class EventHandler {
                 if (!event.canActive()) {
                     EventHandler.this.queue.add(event);
                 } else {
-                    if (event.getType().getValue() == EventType.LFASR_FILE_DATA_CONTENT.getValue()) {
+                    if (event.getType() == EventType.LFASR_FILE_DATA_CONTENT) {
                         String slice_id = event.getFileSlice().getSliceId();
                         Message responseObj = null;
 
@@ -177,13 +184,12 @@ public class EventHandler {
                             int codex = responseObj.getOk();
                             if (codex == 0) {
                                 try {
-                                    LocalPersistenceFile.writeNIO(LfasrClientImp.SERV_STORE_PATH_VAL + "/" + EventHandler.this.upParams.getTaskId() + ".dat", slice_id);
+                                    LocalPersistenceFile.writeNIO(EventHandler.this.xfyunAsrProperties.getStorePath() + "/" + EventHandler.this.upParams.getTaskId() + ".dat", slice_id);
                                     EventHandler.this.modifySliceHM(slice_id, true);
-                                } catch (LfasrException var8) {
-                                    EventHandler.LOGGER.error(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "EventHandler", event.getParams().getTaskId(), "", "(-1) ms", "write meta info to " + LfasrClientImp.SERV_STORE_PATH_VAL + "/" + EventHandler.this.upParams.getTaskId() + ".dat error"), var8);
+                                } catch (LfasrException ex) {
+                                    log.warn(String.format("write meta info to [%s/%s.dat] error", EventHandler.this.xfyunAsrProperties.getStorePath(), EventHandler.this.upParams.getTaskId()), ex);
                                 }
-
-                                EventHandler.LOGGER.debug(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "EventHandler", event.getParams().getTaskId(), "", "(-1) ms", "upload slice send success.file:" + EventHandler.this.upParams.getFile().getAbsolutePath() + ", slice_id:" + slice_id));
+                                log.debug("upload slice send success. file=[{}], sliceId=[{}]", EventHandler.this.upParams.getFile().getAbsolutePath(), slice_id);
                             } else {
                                 EventHandler.this.retryEvent(event, responseObj);
                             }
@@ -207,8 +213,8 @@ public class EventHandler {
                         } else {
                             int code = responseObjx.getOk();
                             if (code == 0) {
-                                LocalPersistenceFile.deleteFile(new File(LfasrClientImp.SERV_STORE_PATH_VAL + "/" + EventHandler.this.upParams.getTaskId() + ".dat"));
-                                EventHandler.LOGGER.info(String.format("[COMPENT]-%s [PROCESS]-%s [ID]-%s [STATUS]-%s [MEASURE]-%s [DEF]-%s", "CLIENT", "EventHandler", event.getParams().getTaskId(), "", "(-1) ms", "merge success"));
+                                LocalPersistenceFile.deleteFile(new File(EventHandler.this.xfyunAsrProperties.getStorePath() + "/" + EventHandler.this.upParams.getTaskId() + ".dat"));
+                                log.info("taskId=[{}], merge success", event.getParams().getTaskId());
                                 EventHandler.this.exec.shutdownNow();
                                 EventHandler.this.latch.countDown();
                                 return;

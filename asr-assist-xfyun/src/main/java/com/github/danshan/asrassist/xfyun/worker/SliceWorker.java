@@ -5,12 +5,8 @@ import com.github.danshan.asrassist.xfyun.event.Event;
 import com.github.danshan.asrassist.xfyun.event.EventHandler;
 import com.github.danshan.asrassist.xfyun.exception.SliceException;
 import com.github.danshan.asrassist.xfyun.file.ChannelFileReader;
-import com.github.danshan.asrassist.xfyun.model.ErrorCode;
-import com.github.danshan.asrassist.xfyun.model.FileSlice;
-import com.github.danshan.asrassist.xfyun.model.Message;
-import com.github.danshan.asrassist.xfyun.model.UploadParams;
-import com.iflytek.msp.cpdb.lfasr.model.EventType;
-import com.iflytek.msp.cpdb.lfasr.util.DictUtil;
+import com.github.danshan.asrassist.xfyun.model.*;
+import com.github.danshan.asrassist.xfyun.util.DictUtil;
 
 import java.util.Map;
 

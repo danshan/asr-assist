@@ -57,8 +57,8 @@ public enum ErrorCode {
     ASR_ENGINE_ERR(26680,"引擎处理阶段错误"),
     ;
 
-    final int code;
-    final String error;
+    public final int code;
+    public final String error;
 
     ErrorCode(int code, String error) {
         this.code = code;

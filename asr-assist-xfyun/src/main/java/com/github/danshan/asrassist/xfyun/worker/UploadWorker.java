@@ -1,17 +1,16 @@
 package com.github.danshan.asrassist.xfyun.worker;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
+import com.github.danshan.asrassist.xfyun.file.AudioLength;
 import com.github.danshan.asrassist.xfyun.file.ChannelFileReader;
 import com.github.danshan.asrassist.xfyun.file.LocalPersistenceFile;
 import com.github.danshan.asrassist.xfyun.model.*;
 import com.github.danshan.asrassist.xfyun.util.VersionUtil;
-import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
-import com.iflytek.msp.cpdb.lfasr.file.AudioLength;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +22,8 @@ public class UploadWorker {
 
     private final XfyunAsrProperties xfyunAsrProperties;
     private UploadParams upParams;
-    private static final Logger LOGGER = Logger.getLogger(UploadWorker.class);
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public UploadWorker(XfyunAsrProperties xfyunAsrProperties, Signature signature, File file, LfasrType lfasrType, Map<String, String> params) {
         this.xfyunAsrProperties = xfyunAsrProperties;
@@ -112,16 +112,16 @@ public class UploadWorker {
             lpm.setSecretKey(upParams.getSignature().getSecretKey());
             lpm.setSigna(upParams.getSignature().getSigna());
             lpm.setTs(upParams.getSignature().getTs());
-            lpm.setLfasrType(upParams.getLfasrType().getValue());
+            lpm.setLfasrType(upParams.getLfasrType().value);
             lpm.setFilePieceSize(this.xfyunAsrProperties.getFilePieceSize());
             lpm.setTaskId(upParams.getTaskId());
             lpm.setFile(upParams.getFile().getAbsolutePath());
             lpm.setParams(upParams.getParams());
-            String jsonStr = JSON.toJSONString(lpm);
-            String fileName = LfasrClientImp.SERV_STORE_PATH_VAL + "/" + upParams.getTaskId() + ".dat";
+            String jsonStr = objectMapper.writeValueAsString(lpm);
+            String fileName = this.xfyunAsrProperties.getStorePath() + "/" + upParams.getTaskId() + ".dat";
             LocalPersistenceFile.writeNIO(fileName, jsonStr);
             log.info("taskId=[{}], [{}], file=[{}]", upParams.getTaskId(), "write meta info success", fileName);
-        } catch (LfasrException ex) {
+        } catch (LfasrException | JsonProcessingException ex) {
             Message failed = Message.failed(ErrorCode.ASR_BREAKPOINT_PERSISTENCE_ERR, null);
             log.warn("taskId=[{}], [{}], [{}]", upParams.getTaskId(), failed, ex.getMessage());
             throw new LfasrException(failed);
