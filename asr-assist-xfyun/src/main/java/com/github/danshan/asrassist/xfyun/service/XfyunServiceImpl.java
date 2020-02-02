@@ -1,15 +1,12 @@
 package com.github.danshan.asrassist.xfyun.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.danshan.asrassist.xfyun.dto.AsrResult;
 import com.github.danshan.asrassist.xfyun.exception.LfasrException;
-import com.github.danshan.asrassist.xfyun.model.LfasrType;
-import com.github.danshan.asrassist.xfyun.model.Message;
-import com.github.danshan.asrassist.xfyun.model.ProgressStatus;
+import com.github.danshan.asrassist.xfyun.model.Progress;
+import com.github.danshan.asrassist.xfyun.model.Result;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +16,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,108 +27,59 @@ import java.util.Optional;
 @Slf4j
 public class XfyunServiceImpl implements XfyunService {
 
-    private static final LfasrType type = LfasrType.LFASR_STANDARD_RECORDED_AUDIO;
-
     @Resource
-    private XfyunAsrClient xfyunAsrClient;
+    private XfyunAsrService xfyunAsrService;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Optional<String> uploadFile(File file) {
-
-        Map<String, String> params = ImmutableMap.<String, String>builder().build();
         try {
-            // 上传音频文件
-            Message uploadMsg = xfyunAsrClient.upload(file, type, params);
-
-            // 判断返回值
-            if (uploadMsg.getOk() == 0) {
-                String taskId = uploadMsg.getData();
-                log.info("start uploading success, taskId=[{}]", taskId);
-                return Optional.of(taskId);
-            } else {
-                log.warn("start uploading failed, ecode=[{}], failed=[{}]", uploadMsg.getErrNo(), uploadMsg.getFailed());
-                return Optional.empty();
-            }
-        } catch (LfasrException e) {
-            try {
-                Message uploadMsg = objectMapper.readValue(e.getMessage(), Message.class);
-                log.warn("start uploading failed, ecode=[{}], failed=[{}]", uploadMsg.getErrNo(), uploadMsg.getFailed());
-            } catch (JsonProcessingException ex) {
-                log.warn("start uploading failed, failed=[{}]", ex.getMessage());
-            }
-            return Optional.empty();
+            return xfyunAsrService.upload(file);
+        } catch (IOException ex) {
+            log.warn("file=[{}], {}", file.getName(), ex.getMessage());
+        } catch (LfasrException ex) {
+            log.warn("file=[{}], {}", file.getName(), ex.getErrorMsg());
         }
+        return Optional.empty();
     }
 
     @Override
-    public Optional<ProgressStatus> getProgressStatus(String taskId) {
-        // 循环等待音频处理结果
+    public Optional<Progress> getProgress(String taskId) {
         try {
-            // 获取处理进度
-            Message progressMsg = xfyunAsrClient.getProgress(taskId);
-
-            // 如果返回状态不等于0，则任务失败
-            if (progressMsg.getOk() != 0) {
-                log.warn("task failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
-                return Optional.empty();
-            } else {
-                ProgressStatus progressStatus = objectMapper.readValue(progressMsg.getData(), ProgressStatus.class);
-                return Optional.of(progressStatus);
-            }
-        } catch (LfasrException | JsonProcessingException e) {
-            try {
-                Message progressMsg = objectMapper.readValue(e.getMessage(), Message.class);
-                log.warn("get progress stauts failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
-            } catch (JsonProcessingException ex) {
-                log.warn("get progress stauts failed, taskId=[{}], failed=[{}]", taskId, ex.getMessage());
-            }
-            return Optional.empty();
+            Preconditions.checkArgument(StringUtils.isNotBlank(taskId), "task id should not be blank.");
+            return xfyunAsrService.getProgress(taskId);
+        } catch (LfasrException ex) {
+            log.warn("taskId=[{}], {}", taskId, ex.getErrorMsg());
         }
+        return Optional.empty();
     }
 
     @Override
-    public Optional<String> getResult(String taskId) {
+    public Optional<List<Result>> getResult(String taskId) {
         try {
-            Message resultMsg = xfyunAsrClient.getResult(taskId);
-            // 如果返回状态等于0，则获取任务结果成功
-            if (resultMsg.getOk() == 0) {
-                return Optional.of(resultMsg.getData());
-            } else {
-                log.warn("get result failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, resultMsg.getErrNo(), resultMsg.getFailed());
-                return Optional.empty();
-            }
-        } catch (LfasrException e) {
-            try {
-                Message progressMsg = objectMapper.readValue(e.getMessage(), Message.class);
-                log.warn("get result failed, taskId=[{}], ecode=[{}], failed=[{}]", taskId, progressMsg.getErrNo(), progressMsg.getFailed());
-            } catch (JsonProcessingException ex) {
-                log.warn("get result failed, taskId=[{}], failed=[{}]", taskId, ex.getMessage());
-            }
-            return Optional.empty();
+            Preconditions.checkArgument(StringUtils.isNotBlank(taskId), "task id should not be blank.");
+            return xfyunAsrService.getResult(taskId);
+        } catch (LfasrException ex) {
+            log.warn("taskId=[{}], {}", taskId, ex.getErrorMsg());
         }
+        return Optional.empty();
     }
 
     @Override
-    public String resultToMarkdown(File file, String resultJson, int timeInterval) {
+    public String resultToMarkdown(File file, List<Result> results, int timeInterval) {
         Preconditions.checkArgument(timeInterval > 0, "time interval should be positive number");
-        AsrResult[] results = new AsrResult[0];
-        try {
-            results = objectMapper.readValue(resultJson, AsrResult[].class);
-        } catch (IOException e) {
-            log.error("convert result json failed, {}", e.getMessage());
-        }
 
         StringBuilder sb = new StringBuilder();
         // append title
         sb.append("# ").append(file.getAbsoluteFile()).append("\n\n");
         sb.append("> create time: ").append(new SimpleDateFormat("yyyy-MM-dd: HH:mm:ss").format(new Date())).append("\n");
-        sb.append("> total: ").append(convertTimestamp(NumberUtils.toLong(results[results.length - 1].getEnd()))).append("\n\n");
+        sb.append("> total: ").append(convertTimestamp(NumberUtils.toLong(results.get(results.size() - 1).getEnd()))).append("\n\n");
         sb.append("---");
 
 
         long nextInterval = 0L;
-        for (AsrResult result : results) {
+        for (Result result : results) {
             long timestamp = NumberUtils.toLong(result.getBegin());
             if (needInterval(timestamp, timeInterval, nextInterval)) {
                 sb.append("\n\n").append("## ").append(convertTimestamp(timestamp)).append("\n\n");

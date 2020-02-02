@@ -13,13 +13,27 @@
   <packaging>jar</packaging>
 
   <properties>
-    <picocli.version>4.1.4</picocli.version>
     <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+
+    <picocli.version>4.1.4</picocli.version>
     <jackson.version>2.10.2</jackson.version>
 
     <sonar.tests>src/test/groovy</sonar.tests>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- spring boot -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -41,9 +55,9 @@
     <!-- spring-boot -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
-      <version>${spring-boot.version}</version>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli-spring-boot-starter</artifactId>

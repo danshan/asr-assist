@@ -15,12 +15,10 @@ public class XfyunResponse {
     private String failed;
     private String data;
 
-    public Message toMessage() {
-        Message message = new Message();
-        message.setOk(ok);
+    public ErrorMsg toMessage() {
+        ErrorMsg message = new ErrorMsg();
         message.setErrNo(errNo);
         message.setFailed(failed);
-        message.setData(data);
         return message;
     }
 

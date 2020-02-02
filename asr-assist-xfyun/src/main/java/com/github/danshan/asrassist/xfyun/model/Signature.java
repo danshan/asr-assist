@@ -21,17 +21,17 @@ public class Signature {
     @ToStringExclude
     private final String secretKey;
     @ToStringExclude
-    private final String signa;
-    private final String ts;
+    private final String signature;
+    private long timestamp;
 
     public Signature(String appId, String secretKey) throws SignatureException {
         this.appId = appId;
         this.secretKey = secretKey;
-        this.ts = String.valueOf((new Date()).getTime() / 1000L);
-        this.signa = HmacSHA1Encrypt(DigestUtils.md5Hex(appId + this.ts), this.secretKey);
+        this.timestamp = new Date().getTime() / 1000;
+        this.signature = hmacSHA1Encrypt(DigestUtils.md5Hex(appId + this.timestamp), this.secretKey);
     }
 
-    private static String HmacSHA1Encrypt(String encryptText, String encryptKey) throws SignatureException {
+    private static String hmacSHA1Encrypt(String encryptText, String encryptKey) throws SignatureException {
         byte[] rawHmac;
         try {
             byte[] data = encryptKey.getBytes(StandardCharsets.UTF_8);

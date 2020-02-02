@@ -3,6 +3,7 @@ package com.github.danshan.asrassist.xfyun.file;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.nio.channels.FileChannel;
 
 @Getter
 @RequiredArgsConstructor
-public class ChannelFileReader {
+public class ChannelFileReader implements Closeable {
 
     private final FileInputStream fileIn;
     private final ByteBuffer byteBuf;

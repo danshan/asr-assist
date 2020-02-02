@@ -1,14 +1,17 @@
 package com.github.danshan.asrassist.xfyun.model;
 
 import lombok.Data;
+import lombok.Synchronized;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Map;
 
 @Data
-public class UploadParams {
+public class UploadParams implements Serializable {
+
     private Signature signature;
     private LfasrType lfasrType;
     private String taskId;

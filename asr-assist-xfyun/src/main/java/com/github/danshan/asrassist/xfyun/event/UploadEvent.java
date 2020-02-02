@@ -1,27 +1,32 @@
 package com.github.danshan.asrassist.xfyun.event;
 
-import com.github.danshan.asrassist.xfyun.model.EventType;
-import com.github.danshan.asrassist.xfyun.model.FileSlice;
-import com.github.danshan.asrassist.xfyun.model.UploadParams;
+import com.github.danshan.asrassist.xfyun.http.dto.UploadReq;
 import lombok.Data;
 
+import java.io.Serializable;
+
+/**
+ * @author shanhonghao
+ * @since 1.0.0
+ */
 @Data
-public class Event {
+public class UploadEvent implements Serializable {
+
     private EventType type;
-    private UploadParams params;
-    private FileSlice fileSlice;
+    private UploadReq uploadReq;
+    private byte[] content;
     private int retryTimes;
     private long activeTimeMillis;
 
-    public Event(EventType type, UploadParams params) {
-        this.type = EventType.LFASR_FILE_DATA_CONTENT;
+    public UploadEvent(EventType type, UploadReq uploadReq) {
+        this.type = EventType.DATA_CONTENT;
         this.activeTimeMillis = -1L;
         this.type = type;
-        this.params = params;
+        this.uploadReq = uploadReq;
     }
 
     public void addRetryTimes() {
-        ++this.retryTimes;
+        this.retryTimes++;
     }
 
     public boolean canActive() {
@@ -31,4 +36,5 @@ public class Event {
             return System.currentTimeMillis() > this.activeTimeMillis;
         }
     }
+
 }

@@ -14,8 +14,8 @@
 
   <properties>
     <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-    <jaudiotagger.version>2.0.3</jaudiotagger.version>
-    <httpcomponents-client.version>4.5.6</httpcomponents-client.version>
+
+    <commons-io.version>2.5</commons-io.version>
   </properties>
 
   <dependencyManagement>
@@ -44,14 +44,21 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org</groupId>
-      <artifactId>jaudiotagger</artifactId>
-      <version>${jaudiotagger.version}</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpmime</artifactId>
-      <version>${httpcomponents-client.version}</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
 
     <dependency>
@@ -68,6 +75,8 @@
       <type>pom</type>
       <scope>test</scope>
     </dependency>
+
+
   </dependencies>
 
   <build>
