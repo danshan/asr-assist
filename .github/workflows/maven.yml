@@ -19,7 +19,7 @@ jobs:
 #      run: mvn -B -V clean jacoco:report coveralls:report -DrepoToken=$repoToken
 #      env:
 #        repoToken: ${{ secrets.COVERALLS_ASR_ASSIST_TOKEN }}
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.0.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+#    - name: Coveralls GitHub Action
+#      uses: coverallsapp/github-action@v1.0.1
+#      with:
+#        github-token: ${{ secrets.GITHUB_TOKEN }}
