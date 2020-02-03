@@ -69,6 +69,11 @@
 
     <!-- test -->
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.danshan</groupId>
       <artifactId>asr-assist-spock</artifactId>
       <version>1.0.0-SNAPSHOT</version>
