@@ -148,16 +148,16 @@
           <configuration>
             <rules>
               <requireMavenVersion>
-                <errorMsg>You are running an older version of Maven. Dragonshard2 requires at least Maven
+                <message>You are running an older version of Maven. Dragonshard2 requires at least Maven
                   ${maven.version}
-                </errorMsg>
+                </message>
                 <version>[${maven.version},)</version>
               </requireMavenVersion>
               <requireJavaVersion>
                 <!-- Until JHipster supports JDK 9 -->
-                <errorMsg>You are running an incompatible version of Java. Dragonshard2 requires JDK
+                <message>You are running an incompatible version of Java. Dragonshard2 requires JDK
                   ${java.version}
-                </errorMsg>
+                </message>
                 <version>[1.8,1.9)</version>
               </requireJavaVersion>
             </rules>

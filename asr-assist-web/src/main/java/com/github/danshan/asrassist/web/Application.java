@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author shanhonghao
@@ -21,16 +21,16 @@ public class Application {
      * 默认的 index 入口, 通过 freemarker 做渲染
      */
     @Controller
-    static public class ViewController {
+    static class ViewController {
 
         @GetMapping("/")
         public String index() {
             return "index";
         }
 
-        @GetMapping("/{path}")
-        public String path(@PathVariable("path") String path) {
-            return path;
+        @GetMapping("favicon.ico")
+        @ResponseBody
+        public void returnNoFavicon() {
         }
 
     }

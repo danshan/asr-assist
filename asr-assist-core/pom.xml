@@ -12,7 +12,7 @@
   <artifactId>asr-assist-core</artifactId>
   <packaging>jar</packaging>
 
-  <name>asr-assist-cli</name>
+  <name>asr-assist-core</name>
   <description>asr assist core library.</description>
 
   <dependencies>
