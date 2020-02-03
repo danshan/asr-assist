@@ -4,7 +4,7 @@ jdk:
 before_install:
 - export TZ=Asia/Shanghai
 install:
-- mvn clean package -Dmaven.test.skip=true -Dgpg.skip -B -V -DrepoToken="${COVERALLS_TOKEN}"
+- mvn clean package -Dmaven.test.skip=true -Dgpg.skip -B -V
 after_success:
   - mvn clean test jacoco:report coveralls:report -DrepoToken="${COVERALLS_TOKEN}"
 notifications:
