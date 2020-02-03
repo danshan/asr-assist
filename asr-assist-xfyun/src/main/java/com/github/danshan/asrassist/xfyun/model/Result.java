@@ -1,4 +1,4 @@
-package com.github.danshan.asrassist.xfyun.dto;
+package com.github.danshan.asrassist.xfyun.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,9 +12,10 @@ import java.io.Serializable;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AsrResult implements Serializable {
+public class Result implements Serializable {
+
     /**
-     *  句子相对于本音频的起始时间，单位为ms
+     * 句子相对于本音频的起始时间，单位为ms
      */
     @JsonProperty("bg")
     private String begin;

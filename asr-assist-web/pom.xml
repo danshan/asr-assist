@@ -14,8 +14,6 @@
 
   <properties>
     <esapi.version>2.1.0.1</esapi.version>
-    <commons-io.version>2.5</commons-io.version>
-    <sonar.tests>src/test/groovy</sonar.tests>
   </properties>
 
   <dependencyManagement>

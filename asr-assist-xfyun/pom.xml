@@ -14,6 +14,10 @@
 
   <properties>
     <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+
+    <commons-io.version>2.5</commons-io.version>
+
+    <sonar.tests>src/test/groovy</sonar.tests>
   </properties>
 
   <dependencyManagement>
@@ -31,14 +35,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.xfyun.lfasr</groupId>
-      <artifactId>lfasr-sdk-client</artifactId>
-      <version>2.0.0.1007</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/lfasr-sdk-client-2.0.0.1007.jar</systemPath>
-    </dependency>
-
-    <dependency>
       <groupId>com.github.danshan</groupId>
       <artifactId>asr-assist-core</artifactId>
       <version>1.0.0-SNAPSHOT</version>
@@ -49,6 +45,23 @@
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -58,12 +71,19 @@
 
     <!-- test -->
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.danshan</groupId>
       <artifactId>asr-assist-spock</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <type>pom</type>
       <scope>test</scope>
     </dependency>
+
+
   </dependencies>
 
   <build>

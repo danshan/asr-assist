@@ -38,7 +38,7 @@
       "name": "asr-assist.xfyun.file-piece-size",
       "type": "java.lang.Integer",
       "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
-      "description": "file piece size, KB.",
+      "description": "file piece size, B.",
       "defaultValue": "10485760"
     },
     {

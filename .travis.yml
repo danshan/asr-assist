@@ -1,12 +1,15 @@
 language: java
-
 jdk:
-  - openjdk8
-
+- openjdk8
 before_install:
-  - export TZ=Asia/Shanghai
+- export TZ=Asia/Shanghai
 install:
-  - mvn clean package -Dgpg.skip -B -V
-
+- mvn clean package -Dmaven.test.skip=true -Dgpg.skip -Dmaven.javadoc.skip=true -B
+  -V
+script:
+- mvn test -DrepoToken="${COVERALLS_TOKEN}" jacoco:report coveralls:report -B -V
 notifications:
   slack: shanhonghao:pdqZbe3SSqGZahgfKsddxPE5
+env:
+  global:
+  - secure: DIj8/Sl9qiHtrsMoZsLsWgcW+5cAwI78S2p090B+bBM+na+d3ach4peLShmXMGYprZEaqPNm61NofkLPkni/KxjMYTEE5UTtUVtgFUWKV82r3EhdfoXKVPRwKiSWvojAb1/bALpgAlIOJKxC4L3/NnxtY8zRAM6TUWwHZ/rRxGhO1ta80WAgfULA2sSQRYy+JvJn2OaTW4+qXpUyKmoJtLbScm+ojnZvHkPRBYCGTNeroU5b/mAWan0uqXKL+wvnp9B4ZmmkF1e6pTVuSaox32hK5jPOkwr3ahAfh0DmDheDKPp+2606y078FKxni5RnmknZxA8QdsFqzkAABSuhX3L+9VN5tphAaxf9sp3cPb/qPH0ONG8S2gGaihUFfppS6jpzq1vzAUyItoN3Twi1jtR7nf0GCs01NlR2kBVMB8lA89KbnShssGmt500jw7gRWElurlr+SEJhi6Wih6rmrn1SXp4xYERkESEQyVrk4pUSYioQfDiKfUWcKoLPwvlzA6qrpvZckZgFiiEGyh9BMvOCQ6Dilz7BB9+RqvoDCenoFrluwd0DT3j6G57lbrimlQIPmVehCSRpJ6EgkjFmNXu4bhXOKfGW2n70cy2rfqAUXgf1MVcNjsuvFPuJWnYaWwmy4DCGM8zDTGWFun6zxgNDuzcwxFWaE4mzckuMREI=

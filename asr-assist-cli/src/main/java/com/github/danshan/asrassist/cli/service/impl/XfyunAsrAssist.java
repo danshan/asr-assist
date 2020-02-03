@@ -1,7 +1,7 @@
 package com.github.danshan.asrassist.cli.service.impl;
 
 import com.github.danshan.asrassist.cli.service.AsrAssist;
-import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
+import com.github.danshan.asrassist.xfyun.model.Progress;
 import com.github.danshan.asrassist.xfyun.service.XfyunService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,8 +28,8 @@ public class XfyunAsrAssist implements AsrAssist {
         while (true) {
             try {
                 Thread.sleep(2 * 1000);
-                ProgressStatus progress = xfyunService.getProgressStatus(taskId).orElseThrow(() -> new IllegalStateException("get progress failed"));
-                log.info("{}, {}", progress.getStatus(), progress.getDesc());
+                Progress progress = xfyunService.getProgress(taskId).orElseThrow(() -> new IllegalStateException("get progress failed"));
+                log.info("taskId=[{}], progress=[{}], [{}]", taskId, progress.getStatus(), progress.getDesc());
                 if (progress.getStatus() == 9) {
                     break;
                 }

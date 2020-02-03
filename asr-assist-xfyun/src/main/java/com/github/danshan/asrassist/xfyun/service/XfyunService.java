@@ -1,9 +1,11 @@
 package com.github.danshan.asrassist.xfyun.service;
 
 
-import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
+import com.github.danshan.asrassist.xfyun.model.Progress;
+import com.github.danshan.asrassist.xfyun.model.Result;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,9 +16,9 @@ public interface XfyunService {
 
     Optional<String> uploadFile(File file);
 
-    Optional<ProgressStatus> getProgressStatus(String taskId);
+    Optional<Progress> getProgress(String taskId);
 
-    Optional<String> getResult(String taskId);
+    Optional<List<Result>> getResult(String taskId);
 
-    String resultToMarkdown(File file, String resultJson, int timeInterval);
+    String resultToMarkdown(File file, List<Result> results, int timeInterval);
 }
