@@ -6,7 +6,7 @@ before_install:
 install:
   - mvn clean package -Dmaven.test.skip=true -Dgpg.skip -B -V
 after_success:
-  - mvn clean verify jacoco:report coveralls:report sonar:sonar -DrepoToken="${COVERALLS_TOKEN}" -Dsonar.login="${SONARCLOUD_TOKEN} -Dgpg.skip -B -V"
+  - mvn clean verify -Dgpg.skip -DrepoToken="${COVERALLS_TOKEN}" -Dsonar.login="${SONARCLOUD_TOKEN} -B -V jacoco:report coveralls:report sonar:sonar"
 notifications:
   slack: shanhonghao:pdqZbe3SSqGZahgfKsddxPE5
 env:
