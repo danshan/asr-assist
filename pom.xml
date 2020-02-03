@@ -42,10 +42,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <sonar.projectKey>danshan_asr-assist</sonar.projectKey>
-    <sonar.organization>danshan-github</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
     <maven.version>3.3.9</maven.version>
     <java.version>1.8</java.version>
 
