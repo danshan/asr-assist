@@ -16,13 +16,13 @@
       "defaultValue": false
     },
     {
-      "name": "asr-assist.xfyun.appId",
+      "name": "asr-assist.xfyun.app-id",
       "type": "java.lang.String",
       "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
       "description": "app id."
     },
     {
-      "name": "asr-assist.xfyun.secretKey",
+      "name": "asr-assist.xfyun.secret-key",
       "type": "java.lang.String",
       "sourceType": "com.github.danshan.asrassist.xfyun.config.XfyunAsrProperties",
       "description": "app secret key."

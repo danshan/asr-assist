@@ -1,0 +1,3 @@
+# Auto Configuration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.danshan.asrassist.core.config.CoreAutoConfiguration

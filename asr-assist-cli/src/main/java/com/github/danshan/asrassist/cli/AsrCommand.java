@@ -1,8 +1,7 @@
 package com.github.danshan.asrassist.cli;
 
-import com.github.danshan.asrassist.cli.service.AsrAssist;
-import com.github.danshan.asrassist.cli.service.AsrAssistFactory;
-import com.github.danshan.asrassist.xfyun.config.XfyunAsrConfig;
+import com.github.danshan.asrassist.core.service.AsrAssist;
+import com.github.danshan.asrassist.core.service.AsrAssistFactory;
 import com.google.common.io.Files;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,13 +22,11 @@ public class AsrCommand implements Callable<Integer> {
 
     @Resource
     private AsrAssistFactory asrAssistFactory;
-    @Resource
-    private XfyunAsrConfig xfyunAsrConfig;
 
-    @Option(names = {"-f", "--file"}, required = true, description = "audio file")
+    @Option(names = {"-f", "--file"}, required = true, description = "audio file.")
     private String file;
 
-    @Option(names = {"-a", "--adapter"}, required = false, defaultValue = "xfyun", description = "asr adapter. default 'xfyun'")
+    @Option(names = {"-a", "--adapter"}, required = false, description = "asr adapter.")
     private String adapter;
 
     @Option(names = {"-i", "--interval"}, required = false, defaultValue = "120", description = "time interval, seconds. default '120'")

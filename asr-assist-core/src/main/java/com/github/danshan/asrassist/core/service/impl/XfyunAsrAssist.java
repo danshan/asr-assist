@@ -1,9 +1,12 @@
-package com.github.danshan.asrassist.cli.service.impl;
+package com.github.danshan.asrassist.core.service.impl;
 
-import com.github.danshan.asrassist.cli.service.AsrAssist;
+import com.github.danshan.asrassist.core.service.AsrAssist;
+import com.github.danshan.asrassist.xfyun.config.XfyunAsrConfig;
 import com.github.danshan.asrassist.xfyun.model.Progress;
 import com.github.danshan.asrassist.xfyun.service.XfyunService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,6 +18,8 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Service
+@ConditionalOnClass(XfyunAsrAssist.class)
+@ConditionalOnBean(XfyunAsrConfig.class)
 @Slf4j
 public class XfyunAsrAssist implements AsrAssist {
 

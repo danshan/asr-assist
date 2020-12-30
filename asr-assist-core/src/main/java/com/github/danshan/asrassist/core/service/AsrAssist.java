@@ -1,4 +1,4 @@
-package com.github.danshan.asrassist.cli.service;
+package com.github.danshan.asrassist.core.service;
 
 import java.io.File;
 import java.util.Optional;

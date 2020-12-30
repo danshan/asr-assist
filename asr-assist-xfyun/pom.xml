@@ -13,33 +13,10 @@
   <packaging>jar</packaging>
 
   <properties>
-    <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-
-    <commons-io.version>2.5</commons-io.version>
-
     <sonar.tests>src/test/groovy</sonar.tests>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- spring boot -->
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
-    <dependency>
-      <groupId>com.github.danshan</groupId>
-      <artifactId>asr-assist-core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -48,19 +25,22 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
