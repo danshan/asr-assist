@@ -16,7 +16,7 @@
     <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
 
     <picocli.version>4.1.4</picocli.version>
-    <jackson.version>2.10.2</jackson.version>
+    <jackson.version>2.12.7.1</jackson.version>
 
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
